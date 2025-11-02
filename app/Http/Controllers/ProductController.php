@@ -3,13 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Models\Category;
-use Carbon\Carbon;
+use App\Models\LiveAccount;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
+    /**
+     * Tampilkan semua produk
+     */
     public function index(Request $request)
     {
         // Ambil parameter sort dan search
@@ -48,76 +52,125 @@ class ProductController extends Controller
         }
 
         // 🔢 Pagination
-        $products = $query->paginate(5);
-
-        // 📂 Ambil kategori untuk filter
-        $categories = Category::orderBy('display_name')->get();
+        $products = $query->paginate(40);
 
         // 👤 Ambil user login
         $user = Auth::user();
-
-        // 📤 Kirim data ke view
-        return view('produk', compact('products', 'user', 'categories', 'sort'));
+        return view('produk', compact('products', 'user', 'sort'));
     }
 
-    public function show($id)
+    /**
+     * Simpan produk baru.
+     */
+    public function store(Request $request)
     {
-        $product = Product::withSum('models', 'sold')
-            ->with(['categories', 'models'])
-            ->where('item_id', $id)
-            ->firstOrFail();
+        $validated = $request->validate([
+            'itemid' => 'required|numeric|unique:products,itemid',
+            'name' => 'required|string|max:255',
+            'image' => 'nullable|string',
+            'product_link' => 'nullable|string',
+            'seller_commission' => 'nullable|numeric',
+            'historical_sold' => 'nullable|integer',
+            'price_min' => 'nullable|numeric',
+            'price_max' => 'nullable|numeric',
+            'rating_star' => 'nullable|numeric',
+            'shop_rating' => 'nullable|numeric',
+        ]);
 
-        $user = Auth::user();
+        $product = Product::create($validated);
+        return response()->json(['message' => 'Produk berhasil disimpan', 'data' => $product]);
+    }
 
-        // Total sold aman
-        $modelsSold = (int) ($product->models_sum_sold ?? 0);
+    /**
+     * Tampilkan detail produk.
+     */
+    public function show($itemid)
+    {
+        $product = Product::findOrFail($itemid);
+        return response()->json($product);
+    }
 
-        // --- Deteksi format ctime ---
-        $ctime = $product->ctime;
+    /**
+     * Perbarui data produk.
+     */
+    public function update(Request $request, $itemid)
+    {
+        $product = Product::findOrFail($itemid);
 
-        if (is_numeric($ctime)) {
-            $ctimeInt = (int) $ctime;
-            // jika milidetik (panjang > 10)
-            $createdAt = strlen((string) $ctimeInt) > 10
-                ? Carbon::createFromTimestampMs($ctimeInt)
-                : Carbon::createFromTimestamp($ctimeInt);
-        } else {
-            $createdAt = Carbon::parse($ctime);
+        $validated = $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'image' => 'sometimes|string',
+            'product_link' => 'sometimes|string',
+            'seller_commission' => 'sometimes|numeric',
+            'historical_sold' => 'sometimes|integer',
+            'price_min' => 'sometimes|numeric',
+            'price_max' => 'sometimes|numeric',
+            'rating_star' => 'sometimes|numeric',
+            'shop_rating' => 'sometimes|numeric',
+        ]);
+
+        $product->update($validated);
+        return response()->json(['message' => 'Produk berhasil diperbarui', 'data' => $product]);
+    }
+
+    /**
+     * Hapus produk.
+     */
+    public function destroy($itemid)
+    {
+        $product = Product::findOrFail($itemid);
+        $product->delete();
+
+        return response()->json(['message' => 'Produk berhasil dihapus']);
+    }
+
+    public function fetchProductsFromShopee($accountId)
+    {
+        $account = LiveAccount::findOrFail($accountId);
+
+        // Kirim request ke Shopee Affiliate API
+        $response = Http::withHeaders([
+            'Cookie' => $account->cookies,
+            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+            'Accept' => 'application/json, text/plain, */*',
+            'Referer' => 'https://affiliate.shopee.co.id/',
+        ])->get('https://affiliate.shopee.co.id/api/v4/pas/product/search_items?limit=100&offset=0');
+
+        if (!$response->successful()) {
+            return back()->with('error', 'Gagal mengambil data produk dari Shopee.');
         }
 
-        // --- Hitung umur produk dalam bulan ---
-        $diffDays = $createdAt->diffInDays(now());
-        $umurProduk = max(1, round($diffDays / 30, 1)); // hasil 14.3 → 14.3 bulan (1 desimal)
+        $data = $response->json();
+        if (empty($data['data']['items'])) {
+            return back()->with('error', 'Tidak ada produk ditemukan atau cookie kedaluwarsa.');
+        }
 
-        // Jika ingin ditampilkan bulat tapi tidak berlebihan, bisa pakai floor()
-        $umurProdukBulat = max(1, floor($diffDays / 30)); // hasil 14.3 → 14 bulan
+        $items = $data['data']['items'];
 
-        // --- Hitung rata-rata per bulan (pakai umur bulat agar logis) ---
-        $rataPerBulan = $umurProdukBulat > 0 ? ceil($modelsSold / $umurProdukBulat) : $modelsSold;
+        foreach ($items as $item) {
+            try {
+                Product::updateOrCreate(
+                    [
+                        'itemid' => $item['itemid'],
+                        'live_account_id' => $account->user_id,
+                    ],
+                    [
+                        'name' => $item['name'] ?? '',
+                        'image' => $item['image'] ?? '',
+                        'product_link' => $item['product_link'] ?? '',
+                        'seller_commission' => $item['seller_commission'] ?? 0,
+                        'historical_sold' => $item['historical_sold'] ?? 0,
+                        'price_min' => $item['price_min'] ?? 0,
+                        'price_max' => $item['price_max'] ?? 0,
+                        'rating_star' => $item['rating_star'] ?? 0,
+                        'shop_rating' => $item['shop_rating'] ?? 0,
+                    ]
+                );
+            } catch (\Exception $e) {
+                Log::error('Gagal menyimpan produk: ' . $e->getMessage());
+            }
+        }
 
-        // --- Hitung total pendapatan ---
-        $totalPendapatan = ($product->price_min / 100000) * $product->historical_sold;
-
-        // --- Total omset varian ---
-        $omsetVarian = $product->models->sum(function ($model) {
-            return ($model->price / 100000) * $model->sold;
-        });
-
-        // --- Rata-rata pendapatan per bulan ---
-        $rataPendapatanPerBulan = $umurProdukBulat > 0
-            ? ceil($totalPendapatan / $umurProdukBulat)
-            : $totalPendapatan;
-
-        return view('detail', compact(
-            'product',
-            'user',
-            'umurProduk',
-            'umurProdukBulat',
-            'rataPerBulan',
-            'totalPendapatan',
-            'omsetVarian',
-            'rataPendapatanPerBulan',
-            'createdAt'
-        ));
+        return redirect()->route('products.index')->with('success', 'Produk berhasil diperbarui dari Shopee!');
     }
 }

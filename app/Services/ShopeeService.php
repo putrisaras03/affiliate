@@ -96,23 +96,6 @@ class ShopeeService
     }
 
     /**
-     * Ambil csrftoken dari cookies
-     */
-    protected function getCsrfToken(): ?string
-    {
-        if (!file_exists($this->cookiePath)) {
-            return null;
-        }
-        $cookies = json_decode(file_get_contents($this->cookiePath), true);
-        foreach ($cookies as $cookie) {
-            if ($cookie['name'] === 'csrftoken') {
-                return $cookie['value'];
-            }
-        }
-        return null;
-    }
-
-    /**
      * Helper GET
      */
     protected function get($uri, $query = [])
@@ -129,51 +112,11 @@ class ShopeeService
     }
 
     /**
-     * Helper POST
-     */
-    protected function post($uri, $payload = [])
-    {
-        $cookieJar = $this->loadCookies();
-        $csrfToken = $this->getCsrfToken();
-
-        $response = $this->client->post($uri, [
-            'cookies' => $cookieJar,
-            'headers' => [
-                'x-csrftoken' => $csrfToken,
-                'referer'     => 'https://shopee.co.id/',
-                'origin'      => 'https://shopee.co.id',
-                'content-type'=> 'application/json',
-            ],
-            'json' => $payload,
-        ]);
-
-        $this->saveCookies($response);
-
-        return json_decode($response->getBody()->getContents(), true);
-    }
-
-    /**
      * Ambil semua kategori
      */
     public function getCategories(): array
     {
         $data = $this->get('/api/v4/pages/get_category_tree');
         return $data['data'] ?? [];
-    }
-
-    /**
-     * Ambil rekomendasi produk per kategori
-     */
-    public function getRecommend($catid, $offset = 0, $limit = 60)
-    {
-        $payload = [
-            'catid'      => (int) $catid,
-            'offset'     => (int) $offset,
-            'limit'      => (int) $limit,
-            'bundle'     => 'category_landing_page',
-            'cat_level'  => 1,
-        ];
-
-        return $this->post('/api/v4/recommend/recommend_v2', $payload);
     }
 }

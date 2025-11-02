@@ -7,47 +7,30 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Jalankan migrasi.
      */
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table) {
-            // jadikan item_id sebagai primary key
-            $table->unsignedBigInteger('item_id')->primary(); // Shopee item id
-
-            $table->string('title');
+            $table->unsignedBigInteger('itemid')->primary(); // Primary Key
+            $table->string('name');
             $table->string('image')->nullable();
-            
-            // simpan ctime dalam bentuk epoch (Unix timestamp)
-            $table->bigInteger('ctime')->nullable();
-
-            // review data
-            $table->float('rating_star')->nullable();
-            $table->integer('rating_count')->default(0);
-            $table->integer('liked_count')->default(0);
-
-            // harga
-            $table->bigInteger('price_min')->nullable();
-            $table->bigInteger('price_max')->nullable();
-
-            // penjualan
-            $table->integer('historical_sold')->default(0);
-
-            // stok barang
-            $table->integer('stock')->default(0);
-
-            // link & komisi
             $table->string('product_link')->nullable();
-            $table->bigInteger('commission')->nullable();
-            $table->bigInteger('seller_commission')->nullable();
-            $table->bigInteger('shopee_commission')->nullable();
-
+            $table->decimal('seller_commission', 10, 2)->nullable(); // misal 5.25%
+            $table->unsignedBigInteger('historical_sold')->default(0);
+            $table->decimal('price_min', 15, 2)->default(0);
+            $table->decimal('price_max', 15, 2)->default(0);
+            $table->decimal('rating_star', 3, 2)->nullable(); // misal 4.75
+            $table->decimal('shop_rating', 3, 2)->nullable();
             $table->timestamps();
+
+            $table->unsignedBigInteger('live_account_id')->nullable();
+            $table->foreign('live_account_id')->references('user_id')->on('live_accounts')->onDelete('cascade');
         });
     }
 
     /**
-     * Reverse the migrations.
+     * Rollback migrasi.
      */
     public function down(): void
     {

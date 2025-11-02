@@ -70,17 +70,17 @@
       <div class="akun-number">{{ $index + 1 }}</div>
       <div class="akun-info-center">
         <div class="akun-info-wrapper">
-        <p class="akun-nama">{{ '@' . $akun->name }}</p>
+        <p class="akun-nama">{{ '@' . $akun->shopee_user_name }}</p>
         <p class="akun-studio">{{ $akun->studio->name ?? 'Tanpa Studio' }}</p>
         </div>
         <div class="akun-dropdown">
   <span class="more-icon" onclick="toggleDropdown(this)">⋮</span>
   <div class="dropdown-menu">
-    <button onclick="editAkun(this, {{ $akun->id }}, '{{ $akun->name }}', '{{ $akun->studio_id }}')">
+    <button onclick="editAkun(this, {{ $akun->user_id }}, '{{ $akun->name }}', '{{ $akun->studio_id }}')">
       <span class="dropdown-icon"><i class="fa-solid fa-pen-to-square"></i></span>
       <span>Edit</span>
     </button>
-    <form action="{{ route('live-accounts.destroy', $akun->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus akun ini?')">
+    <form action="{{ route('live-accounts.destroy', $akun->user_id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus akun ini?')">
       @csrf
       @method('DELETE')
       <button type="submit">
@@ -96,15 +96,12 @@
       <div class="akun-stats">
         <div><h3>100</h3><p>Produk</p></div>
       <div>
-        <h3>{{ $akun->categories->count() }}</h3>
-        <p>Kategori</p>
+        <h3>Aktif</h3>
+        <p>Status Cookie</p>
       </div>
       </div>
 
-      <div class="akun-btns">
-        <a href="{{ route('live_accounts.categories.edit', $akun->id) }}" class="btn-atur">
-          <i class="fa-solid fa-gear"></i> Atur Kategori
-        </a>
+      <div class="akun-btns"> 
         <a href="{{ url('produk') }}" class="btn-lihat">
           <i class="fa-solid fa-cart-shopping"></i> Lihat Semua Produk
         </a>
@@ -133,7 +130,7 @@
   <div class="modal-form">
     <div class="input-group">
       <i class="fa-solid fa-user"></i>
-      <input type="text" name="name" placeholder="Masukkan Nama Akun" required />
+      <input type="text" name="cookie" placeholder="Masukkan Cookie" required />
     </div>
     <div class="input-group">
       <i class="fa-solid fa-building"></i>
@@ -172,8 +169,8 @@
         <input
           type="text"
           id="edit-nama-akun"
-          name="name"
-          placeholder="Masukkan Nama Akun"
+          name="cookie"
+          placeholder="Masukkan Cookie"
           required
         >
       </div>

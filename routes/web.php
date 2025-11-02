@@ -8,10 +8,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\LiveAccountController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\LiveAccountCategoryController;
-use App\Http\Controllers\ProductMetadataController;
-
 
 // Route utama login
 Route::get('/', function () {
@@ -61,16 +57,6 @@ Route::get('/produk/{id}', [ProductController::class, 'show'])->name('produk.det
 Route::get('/schedule', function () {
     return view('schedule');
 });
-
-Route::get('/live-accounts/{liveAccount}/categories', [LiveAccountCategoryController::class, 'edit'])
-    ->name('live_accounts.categories.edit');
-
-Route::put('/live-accounts/{liveAccount}/categories', [LiveAccountCategoryController::class, 'update'])
-    ->name('live_accounts.categories.update');
-
-Route::delete('/live-accounts/{liveAccount}/categories/{categoryId}', [LiveAccountCategoryController::class, 'destroy'])
-    ->name('live_accounts.categories.destroy');
-
 
 // Route untuk membuka modal lupa password via session
 Route::post('/modal/forgot-password', function () {
