@@ -24,6 +24,7 @@ class Product extends Model
         'price_max',
         'rating_star',
         'shop_rating',
+        'live_account_id'
     ];
 
     public function liveAccount()

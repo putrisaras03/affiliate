@@ -8,17 +8,18 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\LiveAccountController;
+use App\Http\Controllers\ShopeeController;
 
 // Route utama login
 Route::get('/', function () {
-    return view('login'); 
+    return view('login');
 });
 
 // Login
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login'); 
-Route::post('/login', [AuthController::class, 'login'])->name('login');  
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login');
 // Logout
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout'); 
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
 // Menampilkan form awal (input WhatsApp / OTP)
@@ -49,9 +50,17 @@ Route::get('/live-accounts/{id}/edit', [LiveAccountController::class, 'edit'])->
 Route::put('/live-accounts/{id}', [LiveAccountController::class, 'update'])->name('live-accounts.update');
 Route::delete('/live-accounts/{id}', [LiveAccountController::class, 'destroy'])->name('live-accounts.destroy');
 
-Route::get('/produk', [ProductController::class, 'index'])
+Route::get('/produk/akun/{id}', [ProductController::class, 'index'])
     ->middleware('auth')
     ->name('produk.index');
+
+Route::post('/produk/akun/{id}/fetch-shopee', [ShopeeController::class, 'fetchProductsFromShopee'])
+    ->middleware('auth')
+    ->name('produk.fetchShopee');
+    
+// Route::post('/produk/fetch/{accountId}', [ShopeeController::class, 'fetchProductsFromShopee'])
+//     ->name('fetch.products');
+
 Route::get('/produk/{id}', [ProductController::class, 'show'])->name('produk.detail');
 
 Route::get('/schedule', function () {

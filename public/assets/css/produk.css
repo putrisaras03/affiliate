@@ -778,3 +778,102 @@ body {
     font-size: 13px;
   }
 }
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* Saat tampil */
+.modal-overlay.show {
+  display: flex;
+}
+
+/* Box Modal */
+.modal-box {
+  background: #fff;
+  border-radius: 16px;
+  padding: 30px 40px;
+  width: 480px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  text-align: center;
+  position: relative;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Ikon dan teks */
+.modal-icon {
+  font-size: 40px;
+  color: #5C6BC0;
+  margin-bottom: 10px;
+}
+
+.modal-box h3 {
+  margin: 5px 0;
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+}
+
+.modal-box p {
+  color: #777;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+/* Input textarea */
+.modal-form textarea {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 14px;
+  resize: none;
+  outline: none;
+  transition: border 0.2s ease;
+}
+
+.modal-form textarea:focus {
+  border-color: #5C6BC0;
+}
+
+/* Tombol Submit */
+.btn-modal-submit {
+  background-color: #5C6BC0;
+  color: white;
+  font-weight: 600;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-modal-submit:hover {
+  background-color: #3F51B5;
+}
+
+/* Tombol X */
+.modal-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  cursor: pointer;
+  color: #777;
+  font-size: 20px;
+}
+
+.modal-close:hover {
+  color: #000;
+}
+
+@keyframes fadeIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}

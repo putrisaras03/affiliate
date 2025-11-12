@@ -20,7 +20,6 @@
       accent-color: #4f46e5; /* warna biru indigo */
       cursor: pointer;
     }
-    
   </style>
 </head>
 <body>
@@ -71,7 +70,7 @@
         <div class="filter-search flex items-center justify-between gap-3">
 
           <!-- Search Bar -->
-          <form action="{{ route('produk.index') }}" method="GET" class="flex w-full max-w-xl">
+          <form action="{{ route('produk.index', ['id' => $id]) }}" method="GET" class="flex w-full max-w-xl">
             <input 
               type="text" 
               name="search" 
@@ -90,17 +89,48 @@
             </button>
           </form>
 
+          <!-- Tombol Ambil Produk -->
+          <button class="btn-ambil-produk" onclick="openCurlModal()">
+            <i class="fa-solid fa-download"></i> Ambil Produk
+          </button>
+
+          <!-- Modal Ambil Produk -->
+          <div class="modal-overlay" id="curlModal">
+            <div class="modal-box">
+              <div class="modal-close" onclick="closeCurlModal()">
+                <i class="fa-solid fa-xmark"></i>
+              </div>
+
+              <div class="modal-icon">
+                <i class="fa-solid fa-terminal"></i>
+              </div>
+              <h3>Ambil Produk dari Shopee</h3>
+              <p>Tempelkan JSON Shopee di bawah ini untuk mengambil data produk</p>
+
+              <form id="curlForm" method="POST" action="{{ route('produk.fetchShopee', ['id' => $id]) }}">
+                @csrf
+                <div class="modal-form">
+                  <div class="input-group">
+                    <i class="fa-solid fa-code"></i>
+                    <textarea name="json_data" placeholder="Tempelkan JSON Shopee di sini..." rows="10" required></textarea>
+                  </div>
+                  <button type="submit" class="btn-modal-submit">Kirim JSON</button>
+                </div>
+              </form>
+            </div>
+          </div>
+            
           <!-- Checkbox Pilih Semua Produk -->
-        <div class="pilih-semua flex items-center gap-2">
-          <input type="checkbox" id="pilihSemua" class="w-4 h-4 cursor-pointer accent-indigo-600">
-          <label for="pilihSemua" class="text-sm text-gray-700 select-none cursor-pointer">
-            Pilih semua produk di halaman ini
-          </label>
-        </div>
+          <div class="pilih-semua flex items-center gap-2">
+            <input type="checkbox" id="pilihSemua" class="w-4 h-4 cursor-pointer accent-indigo-600">
+            <label for="pilihSemua" class="text-sm text-gray-700 select-none cursor-pointer">
+              Pilih semua produk di halaman ini
+            </label>
+          </div>
 
           <!-- Dropdown Urutkan -->
           <div class="dropdown-group">
-            <form id="sortForm" action="{{ route('produk.index') }}" method="GET">
+            <form id="sortForm" action="{{ route('produk.index', ['id' => $id]) }}" method="GET">
               @if(request('search'))
                 <input type="hidden" name="search" value="{{ request('search') }}">
               @endif
@@ -126,35 +156,52 @@
       <div class="produk-container" id="produkContainer">
         <div class="produk-grid">
           @forelse ($products as $item)
-            <a href="{{ route('produk.detail', $item->item_id) }}" class="produk-item-link">
+            <a href="{{ route('produk.detail', ['id' => $id, 'item_id' => $item->item_id]) }}" class="produk-item-link">
               <div class="produk-item relative">
-                @if(isset($item->commission))
+                @if(isset($item->seller_commission) && isset($item->price_min))
+                  @php
+                      $commission_rp = $item->price_min * ($item->seller_commission / 100);
+                  @endphp
                   <div class="produk-komisi">
-                    Rp {{ number_format($item->commission, 0, ',', '.') }}
+                      Rp {{ number_format($commission_rp, 0, ',', '.') }}
                   </div>
                 @endif
 
-                <img src="{{ $item->image_full_url }}" alt="Gambar Produk" class="produk-img">
+                <img src="{{ $item->image }}" alt="Gambar Produk" class="produk-img">
                 <div class="produk-info">
                   <div class="produk-header">
                     <div class="produk-rating">
                       <span class="rating-icon">⭐</span>{{ number_format($item->rating_star ?? 0, 1) }}
                     </div>
-                    <span class="produk-harga">{{ $item->price_formatted }}</span>
+                    <span class="produk-harga">
+                        @if($item->price_min == $item->price_max)
+                            Rp {{ number_format($item->price_min, 0, ',', '.') }}
+                        @else
+                            Rp {{ number_format($item->price_min, 0, ',', '.') }} - Rp {{ number_format($item->price_max, 0, ',', '.') }}
+                        @endif
+                    </span>
                   </div>
                   <div class="produk-nama">
                     {{ \Illuminate\Support\Str::limit($item->title ?? $item->name ?? '-', 40) }}
                   </div>
                   <div class="produk-rating-terjual">
-                    <div class="produk-terjual">{{ $item->sold_formatted }}</div>
+                    <div class="produk-terjual">
+                      @php
+                          $sold = $item->historical_sold ?? 0;
+                          if ($sold >= 10000) {
+                              echo '10RB+';
+                          } elseif ($sold >= 1000) {
+                              echo floor($sold / 1000) . 'RB+';
+                          } else {
+                              echo $sold;
+                          }
+                      @endphp
+                    </div>
                   </div>
                 </div>
 
                 <!-- Checkbox di pojok kanan bawah -->
-                <input 
-                  type="checkbox" 
-                  class="produk-checkbox"
-                  value="{{ $item->product_link }}">
+                <input type="checkbox" class="produk-checkbox" value="{{ $item->product_link }}">
               </div>
             </a>
           @empty
@@ -164,24 +211,14 @@
       </div>
 
       <div class="buat-link-container flex items-center justify-end gap-4">
-      <!-- Jumlah produk dicentang -->
-      <div id="jumlahChecklist" class="text-gray-700 text-sm font-medium">
-        0 produk dipilih
+        <div id="jumlahChecklist" class="text-gray-700 text-sm font-medium">0 produk dipilih</div>
+        <button id="batalChecklist" class="btn-batal"><span>Batal</span></button>
+        <button id="buatLinkMassal" class="btn-buat-link">
+          <i class="fa-solid fa-circle-plus"></i>
+          <span>Buat Link masal</span>
+        </button>
       </div>
 
-      <!-- Tombol Batal -->
-      <button id="batalChecklist" class="btn-batal">
-        <span>Batal</span>
-      </button>
-
-      <!-- Tombol Buat Link Masal -->
-      <button id="buatLinkMassal" class="btn-buat-link">
-        <i class="fa-solid fa-circle-plus"></i>
-        <span>Buat Link masal</span>
-      </button>
-    </div>
-
-      <!-- Pagination Laravel -->
       @if ($products->hasPages())
         <div class="pagination-container">
           <div class="pagination-wrapper">
@@ -208,7 +245,6 @@
       mainContent.classList.toggle('expanded');
     });
 
-    // ✅ Buat file CSV berisi link produk yang dicentang
     document.getElementById("buatLinkMassal").addEventListener("click", function() {
       const checked = document.querySelectorAll(".produk-checkbox:checked");
       if (checked.length === 0) {
@@ -217,9 +253,7 @@
       }
 
       let csvContent = "data:text/csv;charset=utf-8,";
-      checked.forEach(chk => {
-        csvContent += chk.value + "\n";
-      });
+      checked.forEach(chk => csvContent += chk.value + "\n");
 
       const encodedUri = encodeURI(csvContent);
       const link = document.createElement("a");
@@ -230,7 +264,6 @@
       document.body.removeChild(link);
     });
 
-    // ✅ Update jumlah produk yang dicentang secara real-time
     const jumlahChecklist = document.getElementById("jumlahChecklist");
     const checkboxes = document.querySelectorAll(".produk-checkbox");
 
@@ -239,28 +272,17 @@
       jumlahChecklist.textContent = `${count} produk dipilih`;
     }
 
-    // Jalankan update saat checkbox diubah
-    checkboxes.forEach(chk => {
-      chk.addEventListener("change", updateJumlahChecklist);
-    });
+    checkboxes.forEach(chk => chk.addEventListener("change", updateJumlahChecklist));
 
-    // Reset jumlah jika tombol batal ditekan
     document.getElementById("batalChecklist").addEventListener("click", function() {
       checkboxes.forEach(chk => chk.checked = false);
       updateJumlahChecklist();
-
-      // ✅ Jika sebelumnya "Pilih Semua" aktif, matikan juga
       const pilihSemua = document.getElementById("pilihSemua");
-      if (pilihSemua.checked) {
-        pilihSemua.checked = false;
-      }
-
+      if (pilihSemua.checked) pilihSemua.checked = false;
       alert("Semua produk yang dipilih akan dibatalkan!");
     });
 
-    // ✅ Fungsi Pilih Semua Produk
     const pilihSemua = document.getElementById("pilihSemua");
-
     if (pilihSemua) {
       pilihSemua.addEventListener("change", function() {
         const allCheckboxes = document.querySelectorAll(".produk-checkbox");
@@ -268,6 +290,18 @@
         updateJumlahChecklist();
       });
     }
+    function openCurlModal() {
+      document.getElementById('curlModal').classList.add('show');
+    }
+
+    function closeCurlModal() {
+      document.getElementById('curlModal').classList.remove('show');
+    }
+
+    window.addEventListener('click', function (event) {
+      const modal = document.getElementById('curlModal');
+      if (event.target === modal) closeCurlModal();
+    });
   </script>
 </body>
 </html>
