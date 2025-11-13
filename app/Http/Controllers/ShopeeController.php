@@ -111,6 +111,7 @@ class ShopeeController extends Controller
                 ]);
             }
         }
+
         return redirect()->route('produk.index', ['id' => $accountId])
             ->with('success', 'Produk berhasil diperbarui dari Shopee!');
     }

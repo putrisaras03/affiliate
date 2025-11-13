@@ -46,7 +46,7 @@ class ProductController extends Controller
                 break;
         }
 
-        $products = $query->paginate(40);
+        $products = $query->paginate(20);
         $user = Auth::user();
 
         return view('produk', compact('products', 'user', 'sort', 'id'));

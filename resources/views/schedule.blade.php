@@ -2,7 +2,8 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Scheduler - TokoLabs</title>
+  <title>Scheduler - Recofy</title>
+  <link rel="icon" href="{{ asset('assets/img/recofy.png') }}" type="image/png">
   <link rel="stylesheet" href="{{ asset('assets/css/schedule.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
@@ -13,8 +14,7 @@
   <div class="menu-container">
     <div class="logo">
       <div class="brand">
-        <i class="fa-solid fa-shop"></i>
-        <span class="brand-text">TokoLabs</span>
+       <img src="/assets/img/4-foto.png">
       </div>
       <div class="bars-wrapper" id="toggleSidebar">
         <i class="fa-solid fa-bars"></i>
@@ -36,19 +36,20 @@
   </div>
 </aside>
 
-  <!-- Main Content -->
+   <!-- Main Content -->
   <div class="main-content" id="mainContent">
-  <div class="navbar">
-    <div class="nav-title">Scheduler</div>
-
-    <div class="user-area">
-      <!-- Hi, Welda dan avatar saja -->
-      <div class="greetingg">Hi, Welda!</div>
-      <div class="avatar">
-        <img src="/assets/img/profil.jpg" alt="Profil" />
+    <div class="navbar">
+      <div class="nav-title">Scheduler</div>
+      <div class="user-area">
+        <div class="greetingg">Hi, {{ auth()->user()->username ?? auth()->user()->name }}!</div>
+          <a href="{{ route('profile') }}">
+            <div class="avatar" style="cursor: pointer;">
+              <img src="{{ auth()->user()->img_profile ? asset('img_profiles/' . auth()->user()->img_profile) : asset('assets/img/profil.jpg') }}" 
+                  alt="Profil" />
+          </div>
+        </a>
       </div>
     </div>
-  </div>
 
 <div class="schedule-wrapper">
   <!-- Box Jadwal -->

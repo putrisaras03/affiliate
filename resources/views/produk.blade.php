@@ -2,7 +2,8 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Rekomendasi Produk - TokoLabs</title>
+  <title>Rekomendasi Produk - Recofy</title>
+  <link rel="icon" href="{{ asset('assets/img/recofy.png') }}" type="image/png">
   <link rel="stylesheet" href="{{ asset('assets/css/produk.css') }}?v={{ time() }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <style>
@@ -20,27 +21,27 @@
       accent-color: #4f46e5; /* warna biru indigo */
       cursor: pointer;
     }
+    
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-      <div class="menu-container">
-        <div class="logo">
-          <div class="brand">
-            <i class="fa-solid fa-shop"></i>
-            <span class="brand-text">TokoLabs</span>
-          </div>
+     <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+  <div class="menu-container">
+    <div class="logo">
+      <div class="brand">
+       <img src="/assets/img/4-foto.png">
+      </div>
           <div class="bars-wrapper" id="toggleSidebar">
             <i class="fa-solid fa-bars"></i>
           </div>
         </div>
         <ul>
           <li><a href="{{ url('dashboard') }}"><i class="fa-solid fa-gauge-high"></i> <span class="menu-text">Dashboard</span></a></li>
-          <li><a href="{{ url('etalase') }}"><i class="fa-solid fa-cart-shopping"></i> <span class="menu-text">Rekomendasi Produk</span></a></li>
-          <li><a href="{{ url('schedule') }}"><i class="fa-solid fa-calendar-days"></i> <span class="menu-text">Scheduler</span></a></li>
-          <li><a href="{{ url('akun') }}"><i class="fa-solid fa-gear"></i> <span class="menu-text">Pengaturan Akun</span></a></li>
+          <li class="produk active"><a href="#"><i class="fa-solid fa-cart-shopping"></i> <span class="menu-text">Rekomendasi Produk</span></a></li>
+          <!--<li><a href="{{ url('schedule') }}"><i class="fa-solid fa-calendar-days"></i> <span class="menu-text">Scheduler</span></a></li>-->
+          <li><a href="{{ url('profile') }}"><i class="fa-solid fa-gear"></i> <span class="menu-text">Pengaturan Akun</span></a></li>
         </ul>
       </div>
       <div class="logout-wrapper">
@@ -210,14 +211,6 @@
         </div>
       </div>
 
-      <div class="buat-link-container flex items-center justify-end gap-4">
-        <div id="jumlahChecklist" class="text-gray-700 text-sm font-medium">0 produk dipilih</div>
-        <button id="batalChecklist" class="btn-batal"><span>Batal</span></button>
-        <button id="buatLinkMassal" class="btn-buat-link">
-          <i class="fa-solid fa-circle-plus"></i>
-          <span>Buat Link masal</span>
-        </button>
-      </div>
 
       @if ($products->hasPages())
         <div class="pagination-container">
@@ -228,6 +221,15 @@
       @endif
     </div>
   </div>
+
+  <div class="buat-link-container flex items-center justify-end gap-4">
+        <div id="jumlahChecklist" class="text-gray-700 text-sm font-medium">0 produk dipilih</div>
+        <button id="batalChecklist" class="btn-batal"><span>Batal</span></button>
+        <button id="buatLinkMassal" class="btn-buat-link">
+          <i class="fa-solid fa-circle-plus"></i>
+          <span>Buat Link masal</span>
+        </button>
+      </div>
 
   <script>
     function konfirmasiLogout() {

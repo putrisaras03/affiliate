@@ -2,19 +2,19 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard - TokoLabs</title>
+  <title>Dashboard - Recofy</title>
+  <link rel="icon" href="{{ asset('assets/img/recofy.png') }}" type="image/png">
   <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
   <div class="container">
-    <!-- Sidebar -->
+   <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
   <div class="menu-container">
     <div class="logo">
       <div class="brand">
-        <i class="fa-solid fa-shop"></i>
-        <span class="brand-text">TokoLabs</span>
+       <img src="/assets/img/4-foto.png">
       </div>
       <div class="bars-wrapper" id="toggleSidebar">
         <i class="fa-solid fa-bars"></i>
@@ -23,7 +23,7 @@
     <ul>
       <li class="dashboard active"><a href="#"><i class="fa-solid fa-gauge-high"></i> <span class="menu-text">Dashboard</span></a></li>
       <li><a href="etalase"><i class="fa-solid fa-cart-shopping"></i> <span class="menu-text">Rekomendasi Produk</span></a></li>
-      <li><a href="schedule"><i class="fa-solid fa-calendar-days"></i> <span class="menu-text">Scheduler</span></a></li>
+      <!--<li><a href="schedule"><i class="fa-solid fa-calendar-days"></i> <span class="menu-text">Scheduler</span></a></li>-->
       <li><a href="profile"><i class="fa-solid fa-gear"></i> <span class="menu-text">Pengaturan Akun</span></a></li>
     </ul>
   </div>
