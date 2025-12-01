@@ -39,8 +39,13 @@
         </div>
         <ul>
           <li><a href="{{ url('dashboard') }}"><i class="fa-solid fa-gauge-high"></i> <span class="menu-text">Dashboard</span></a></li>
-          <li class="produk active"><a href="#"><i class="fa-solid fa-cart-shopping"></i> <span class="menu-text">Rekomendasi Produk</span></a></li>
-          <!--<li><a href="{{ url('schedule') }}"><i class="fa-solid fa-calendar-days"></i> <span class="menu-text">Scheduler</span></a></li>-->
+          <li class="produk active">
+              <a href="{{ route('live-accounts.index') }}">
+                  <i class="fa-solid fa-cart-shopping"></i> 
+                  <span class="menu-text">Akun & Produk</span>
+              </a>
+          </li>
+          <li><a href="criteria"><i class="fa-solid fa-sliders"></i> <span class="menu-text">Pengaturan Kriteria</span></a></li>
           <li><a href="{{ url('profile') }}"><i class="fa-solid fa-gear"></i> <span class="menu-text">Pengaturan Akun</span></a></li>
         </ul>
       </div>
@@ -71,7 +76,7 @@
         <div class="filter-search flex items-center justify-between gap-3">
 
           <!-- Search Bar -->
-          <form action="{{ route('produk.index', ['id' => $id]) }}" method="GET" class="flex w-full max-w-xl">
+          <form action="{{ route('produk.index', ['id' => $liveAccountId]) }}" method="GET" class="flex w-full max-w-xl">
             <input 
               type="text" 
               name="search" 
@@ -87,7 +92,16 @@
               type="submit" 
               class="btn-cari px-5 py-2 text-sm font-semibold text-white bg-orange-500 rounded-r-md hover:bg-orange-600 transition-colors duration-200">
               Cari
-            </button>
+</button>
+          </form>
+
+          <!-- Tombol Jalankan SPK -->
+          <form action="{{ route('moora.run', ['accountId' => $liveAccountId]) }}" method="POST" class="inline-block">
+              @csrf
+              <button type="submit"
+                  class="btn btn-primary px-4 py-2 rounded-md text-white font-semibold shadow-sm hover:bg-blue-700 transition">
+                  <i class="fa-solid fa-calculator mr-1"></i> Jalankan SPK
+              </button>
           </form>
 
           <!-- Tombol Ambil Produk -->
@@ -108,7 +122,7 @@
               <h3>Ambil Produk dari Shopee</h3>
               <p>Tempelkan JSON Shopee di bawah ini untuk mengambil data produk</p>
 
-              <form id="curlForm" method="POST" action="{{ route('produk.fetchShopee', ['id' => $id]) }}">
+              <form id="curlForm" method="POST" action="{{ route('produk.fetchShopee', ['id' => $liveAccountId]) }}">
                 @csrf
                 <div class="modal-form">
                   <div class="input-group">
@@ -120,18 +134,10 @@
               </form>
             </div>
           </div>
-            
-          <!-- Checkbox Pilih Semua Produk -->
-          <div class="pilih-semua flex items-center gap-2">
-            <input type="checkbox" id="pilihSemua" class="w-4 h-4 cursor-pointer accent-indigo-600">
-            <label for="pilihSemua" class="text-sm text-gray-700 select-none cursor-pointer">
-              Pilih semua produk di halaman ini
-            </label>
-          </div>
 
           <!-- Dropdown Urutkan -->
           <div class="dropdown-group">
-            <form id="sortForm" action="{{ route('produk.index', ['id' => $id]) }}" method="GET">
+            <form id="sortForm" action="{{ route('produk.index', ['id' => $liveAccountId]) }}" method="GET">
               @if(request('search'))
                 <input type="hidden" name="search" value="{{ request('search') }}">
               @endif
@@ -157,7 +163,7 @@
       <div class="produk-container" id="produkContainer">
         <div class="produk-grid">
           @forelse ($products as $item)
-            <a href="{{ route('produk.detail', ['id' => $id, 'item_id' => $item->item_id]) }}" class="produk-item-link">
+            <a href="{{ route('produk.detail', ['id' => $liveAccountId, 'item_id' => $item->item_id]) }}" class="produk-item-link">
               <div class="produk-item relative">
                 @if(isset($item->seller_commission) && isset($item->price_min))
                   @php
@@ -211,7 +217,6 @@
         </div>
       </div>
 
-
       @if ($products->hasPages())
         <div class="pagination-container">
           <div class="pagination-wrapper">
@@ -222,14 +227,34 @@
     </div>
   </div>
 
-  <div class="buat-link-container flex items-center justify-end gap-4">
-        <div id="jumlahChecklist" class="text-gray-700 text-sm font-medium">0 produk dipilih</div>
-        <button id="batalChecklist" class="btn-batal"><span>Batal</span></button>
-        <button id="buatLinkMassal" class="btn-buat-link">
-          <i class="fa-solid fa-circle-plus"></i>
-          <span>Buat Link masal</span>
+  <div class="bottom-bar">
+
+    <!-- Left -->
+    <div class="bottom-left flex items-center gap-2">
+        <input type="checkbox" id="pilihSemua" class="w-4 h-4 cursor-pointer accent-red-500">
+        <label for="pilihSemua" class="text-sm text-gray-700">
+            Pilih semua produk di halaman ini
+        </label>
+    </div>
+
+    <!-- Right -->
+    <div class="bottom-right flex items-center gap-4">
+
+        <span id="jumlahChecklist" class="text-sm text-gray-600">
+            0 produk dipilih
+        </span>
+
+        <button id="batalChecklist" class="btn-batal">
+            Batal
         </button>
-      </div>
+
+        <button id="buatLinkMassal" class="btn-massal">
+            Buat Link Massal
+        </button>
+    </div>
+
+</div>
+
 
   <script>
     function konfirmasiLogout() {

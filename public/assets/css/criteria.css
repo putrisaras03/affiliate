@@ -1,0 +1,347 @@
+:root {
+  --primary: #4f46e5;
+  --bg: #f5f7fa;
+  --text-dark: #1f2937;
+  --text-muted: #6b7280;
+  --white: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: var(--bg);
+}
+
+.container {
+  display: flex;
+}
+
+/* === SIDEBAR === */
+.sidebar {
+  width: 240px;
+  background: var(--white);
+  height: 100vh;
+  padding: 5px 5px 5px;
+  border-right: 1px solid #e5e7eb;
+  position: fixed;
+  left: 0;
+  top: 0;
+  font-size: 13px;
+  transition: width 0.3s ease;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-bottom: 20px;
+}
+
+.sidebar.collapsed {
+  width: 70px;
+}
+
+.sidebar.collapsed .brand span,
+.sidebar.collapsed ul li span {
+  display: none;
+}
+
+.logo {
+  display: flex;
+  flex-direction: column; /* Biar logo dan teks diatur vertikal */
+  align-items: center;    /* Tengah secara horizontal */
+  justify-content: center; /* Tengah secara vertikal */
+  text-align: center;
+  margin-bottom: 20px;
+  padding-top: 10px; /* beri jarak dari atas */
+}
+
+.logo .brand img {
+  display: flex;
+  margin-right: 15px;
+  margin-bottom: 30px;
+  width: 130px;
+}
+
+.logo .bars-wrapper {
+  background-color: #fff;
+  padding: 5px 10px;
+  border-radius: 10px;
+  margin-top: -70px; 
+}
+
+.logo .bars-wrapper i {
+  color: #000;
+  font-size: 20px;
+}
+
+.sidebar ul {
+  list-style: none;
+  margin-top: 5px;
+  padding: 0;
+}
+
+.sidebar li {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  transition: 0.3s;
+  cursor: pointer;
+  color: var(--text-dark);
+  font-size: 13px;
+}
+
+.sidebar li i {
+  margin-right: 10px;
+  font-size: 14px;
+  width: 20px;
+  text-align: center;
+}
+
+.sidebar li.active,
+.sidebar li:hover {
+  background: var(--primary);
+  color: var(--white);
+}
+
+.sidebar li a {
+  text-decoration: none !important;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  font-size: 15px;
+}
+
+.logout-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.logout-btn {
+  width: 180px;
+  padding: 10px 16px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ff2e2e;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.logout-btn i {
+  margin-right: 6px;
+}
+
+.logout-btn:hover {
+  background-color: #cc1f1f;
+}
+
+.sidebar.collapsed .logout-text,
+.sidebar.collapsed .brand,
+.sidebar.collapsed .menu-text {
+  display: none;
+}
+
+.sidebar .logo .bars-wrapper {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.sidebar.collapsed .logo .bars-wrapper {
+  margin: 0 auto;
+}
+
+.navbar {
+  left: 240px;
+  transition: left 0.3s ease;
+  height: 60px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 999;
+}
+
+.main-content {
+  margin-left: 240px;
+  width: calc(100% - 240px);
+  transition: margin-left 0.3s ease;
+}
+
+.main-content.expanded {
+  margin-left: 70px;
+  width: calc(100% - 70px);
+}
+
+.main-content.expanded ~ .navbar,
+.sidebar.collapsed ~ .main-content .navbar,
+.sidebar.collapsed + .main-content .navbar {
+  left: 70px;
+}
+
+.dashboard {
+  padding: 80px 30px 30px 30px;
+}
+
+.user-area {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  position: relative;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.greetingg {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+
+/* Kontainer isi dashboard */
+.dashboard-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 90px 30px 30px 30px; /* cukup padding kiri 30px */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+
+.box {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  flex: 1 1 45%;
+  min-width: 260px;
+}
+
+
+/* Header tab untuk Umur Produk */
+.tab-header {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.tab-header span {
+  cursor: pointer;
+  color: #666;
+  padding-bottom: 4px;
+}
+
+.tab-header .active {
+  color: #3c3eff;
+  border-bottom: 2px solid #3c3eff;
+  font-weight: 600;
+}
+
+/* Tabel umum */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+th, td {
+  padding: 8px 10px;
+  text-align: left;
+}
+
+thead {
+  background-color: #f1f2f6;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Tren naik atau turun */
+.tren {
+  font-weight: bold;
+}
+
+.tren.naik {
+  color: green;
+}
+
+/* Label kategori */
+.label {
+  display: inline-block;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 6px;
+  color: #fff;
+}
+
+.label.skincare {
+  background-color: #ff6b6b;
+}
+
+.label.makeup {
+  background-color: #7f7fff;
+}
+
+.label.dapur {
+  background-color: #59c378;
+}
+
+.label.elektronik {
+  background-color: #646464;
+}
+
+/* Komisi kecil */
+.komisi-tabel {
+  font-size: 11px;
+  color: #4caf50;
+  display: block;
+  margin-top: 4px;
+}
+
+
+/* Responsif: layar kecil jadi 1 kolom */
+@media (max-width: 600px) {
+  .dashboard-content {
+    gap: 12px;
+    padding: 90px 12px 30px; /* Tambah jarak top sedikit agar tetap aman */
+  }
+
+  .box {
+    flex: 1 1 100%;
+  }
+}
+

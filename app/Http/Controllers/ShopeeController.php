@@ -53,7 +53,7 @@ class ShopeeController extends Controller
         if (!$response->successful()) {
             Log::error('Gagal ambil data Shopee', [
                 'status' => $response->status(),
-                'body' => $response->body(),
+                'body'    => $response->body(),
             ]);
             return back()->with('error', 'Gagal mengambil data dari Shopee Affiliate.');
         }
@@ -69,42 +69,51 @@ class ShopeeController extends Controller
         foreach ($items as $item) {
             try {
                 $productData = $item['batch_item_for_item_card_full'] ?? [];
-                $ratingData = $productData['item_rating'] ?? [];
+                $ratingData  = $productData['item_rating'] ?? [];
+
+                // Ambil ctime (UNIX timestamp)
+                $ctimeUnix = $productData['ctime'] ?? null;
 
                 Product::updateOrCreate(
                     ['itemid' => $item['item_id']],
                     [
-                        // Simpan ID user pemilik akun
-                        'live_account_id' => $account->user_id, 
+                        'live_account_id' => $account->id,
 
                         'name' => $productData['name'] ?? '',
+
                         'image' => isset($productData['image'])
                             ? 'https://down-id.img.susercontent.com/file/' . $productData['image']
                             : '',
+
                         'product_link' => $item['product_link'] ?? $item['long_link'] ?? '',
+
                         'seller_commission' => isset($item['seller_commission_rate'])
                             ? floatval(str_replace('%', '', $item['seller_commission_rate']))
                             : (isset($item['default_commission_rate'])
                                 ? floatval(str_replace('%', '', $item['default_commission_rate']))
                                 : 0),
+
                         'historical_sold' => $productData['historical_sold'] ?? 0,
+
                         'price_min' => isset($productData['price_min'])
                             ? $productData['price_min'] / 100000
                             : 0,
+
                         'price_max' => isset($productData['price_max'])
                             ? $productData['price_max'] / 100000
                             : 0,
 
-                        // Ambil rating dari struktur item_rating
                         'rating_star' => isset($ratingData['rating_star'])
                             ? floatval($ratingData['rating_star'])
                             : 0,
 
-                        // Shop rating kadang tidak ada, gunakan rating_star sebagai fallback
                         'shop_rating' => $productData['shop_rating']
                             ?? ($ratingData['rating_star'] ?? 0),
+
+                        'ctime' => $ctimeUnix ? intval($ctimeUnix) : null,
                     ]
                 );
+
             } catch (\Exception $e) {
                 Log::error('Gagal simpan produk Shopee: ' . $e->getMessage(), [
                     'item_id' => $item['item_id'] ?? null,

@@ -22,8 +22,8 @@
     </div>
     <ul>
       <li><a href="dashboard"><i class="fa-solid fa-gauge-high"></i> <span class="menu-text">Dashboard</span></a></li>
-      <li class="etalase active"><a href="#"><i class="fa-solid fa-cart-shopping"></i> <span class="menu-text">Rekomendasi Produk</span></a></li>
-      <!--<li><a href="schedule"><i class="fa-solid fa-calendar-days"></i> <span class="menu-text">Scheduler</span></a></li>-->
+      <li class="etalase active"><a href="#"><i class="fa-solid fa-cart-shopping"></i> <span class="menu-text">Akun & Produk</span></a></li>
+      <li><a href="criteria"><i class="fa-solid fa-sliders"></i> <span class="menu-text">Pengaturan Kriteria</span></a></li>
       <li><a href="profile"><i class="fa-solid fa-gear"></i> <span class="menu-text">Pengaturan Akun</span></a></li>
     </ul>
   </div>
@@ -69,18 +69,18 @@
               <div class="akun-number">{{ $index + 1 }}</div>
               <div class="akun-info-center">
                 <div class="akun-info-wrapper">
-                  <p class="akun-nama">{{ '@' . $akun->shopee_user_name }}</p>
+                  <p class="akun-nama">{{ '@' . $akun->nama }}</p>
                   <p class="akun-studio">{{ $akun->studio->name ?? 'Tanpa Studio' }}</p>
                 </div>
 
                 <div class="akun-dropdown">
                   <span class="more-icon" onclick="toggleDropdown(this)">⋮</span>
                   <div class="dropdown-menu">
-                    <button onclick="editAkun(this, {{ $akun->user_id }}, '{{ $akun->name }}', '{{ $akun->studio_id }}')">
+                    <button onclick="editAkun(this, {{ $akun->id }}, '{{ $akun->name }}', '{{ $akun->studio_id }}')">
                       <span class="dropdown-icon"><i class="fa-solid fa-pen-to-square"></i></span>
                       <span>Edit</span>
                     </button>
-                    <form action="{{ route('live-accounts.destroy', $akun->user_id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus akun ini?')">
+                    <form action="{{ route('live-accounts.destroy', $akun->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus akun ini?')">
                       @csrf
                       @method('DELETE')
                       <button type="submit">
@@ -94,15 +94,14 @@
             </div>
 
             <div class="akun-stats">
-              <div><h3>100</h3><p>Produk</p></div>
-              <div>
-                <h3>Aktif</h3>
-                <p>Status Cookie</p>
-              </div>
+                <div>
+                    <h3>{{ $akun->products_count }}</h3>
+                    <p>Produk</p>
+                </div>
             </div>
 
             <div class="akun-btns"> 
-              <a href="{{ route('produk.index', ['id' => $akun->user_id]) }}" class="btn-lihat">
+              <a href="{{ route('produk.index', ['id' => $akun->id]) }}" class="btn-lihat">
                 <i class="fa-solid fa-cart-shopping"></i> Lihat Semua Produk
               </a>
             </div>
@@ -132,7 +131,7 @@
             <div class="modal-form">
               <div class="input-group">
                 <i class="fa-solid fa-user"></i>
-                <input type="text" name="cookie" placeholder="Masukkan Cookie" required />
+                <input type="text" name="nama" placeholder="Masukkan Nama" required />
               </div>
               <div class="input-group">
                 <i class="fa-solid fa-building"></i>
@@ -188,97 +187,141 @@
 
   <!-- ================= JS ================= -->
   <script>
-    function editAkun(button, id, name, studioId) {
-      document.getElementById('edit-nama-akun').value = name;
-      document.getElementById('edit-studio').value = studioId;
-      const form = document.getElementById('editForm');
-      form.action = `/live-accounts/${id}`;
-      openEditModal();
-    }
+  // ================= Dropdown =================
+  function toggleDropdown(trigger) {
+    const dropdown = trigger.closest('.akun-dropdown').querySelector('.dropdown-menu');
+    const allDropdowns = document.querySelectorAll('.dropdown-menu');
 
-    function openEditModal() { document.getElementById('editModal').style.display = 'flex'; closeAllDropdown(); }
-    function closeEditModal() { document.getElementById('editModal').style.display = 'none'; }
+    // Tutup semua dropdown lain kecuali yang diklik
+    allDropdowns.forEach(d => {
+      if (d !== dropdown) d.style.display = 'none';
+    });
 
-    function toggleDropdown(element) {
-      const dropdown = element.closest('.akun-dropdown')?.querySelector('.dropdown-menu');
-      if (!dropdown) return;
-      closeAllDropdown();
-      dropdown.classList.toggle('show');
-    }
+    // Toggle dropdown yang diklik
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+  }
 
-    function closeAllDropdown() {
+  // Tutup dropdown jika klik di luar
+  document.addEventListener('click', function(event) {
+    if (!event.target.closest('.akun-dropdown')) {
       document.querySelectorAll('.dropdown-menu').forEach(menu => {
-        menu.classList.remove('show');
         menu.style.display = 'none';
       });
     }
+  });
 
-    window.addEventListener('click', function (event) {
-      if (!event.target.closest('.akun-dropdown')) closeAllDropdown();
-    });
+  // ================= Modal Tambah Akun =================
+  function openModal() {
+    document.getElementById('modal').classList.add('show');
+  }
 
-    function openModal() { document.getElementById('modal').classList.add('show'); }
-    function closeModal() { document.getElementById('modal').classList.remove('show'); }
+  function closeModal() {
+    document.getElementById('modal').classList.remove('show');
+  }
 
-    function konfirmasiLogout() {
-      if (confirm("Apakah Anda yakin ingin logout?")) window.location.href = "/";
+  // ================= Modal Edit Akun =================
+  function editAkun(button, id, name, studioId) {
+    document.getElementById('edit-nama-akun').value = name;
+    document.getElementById('edit-studio').value = studioId;
+
+    const form = document.getElementById('editForm');
+    form.action = `/live-accounts/${id}`;
+
+    openEditModal();
+  }
+
+  function openEditModal() {
+    document.getElementById('editModal').style.display = 'flex';
+    // Tutup semua dropdown saat modal terbuka
+    document.querySelectorAll('.dropdown-menu').forEach(menu => menu.style.display = 'none');
+  }
+
+  function closeEditModal() {
+    document.getElementById('editModal').style.display = 'none';
+  }
+
+  // ================= Logout =================
+  function konfirmasiLogout() {
+    if (confirm("Apakah Anda yakin ingin logout?")) {
+      window.location.href = "/";
     }
+  }
 
-    const sidebar = document.getElementById('sidebar');
-    const mainContent = document.getElementById('mainContent');
-    const toggleBtn = document.getElementById('toggleSidebar');
-    toggleBtn.addEventListener('click', function () {
-      sidebar.classList.toggle('collapsed');
-      mainContent.classList.toggle('expanded');
+  // ================= Sidebar =================
+  const sidebar = document.getElementById('sidebar');
+  const mainContent = document.getElementById('mainContent');
+  const toggleBtn = document.getElementById('toggleSidebar');
+
+  toggleBtn.addEventListener('click', function () {
+    sidebar.classList.toggle('collapsed');
+    mainContent.classList.toggle('expanded');
+  });
+
+  // ================= Pagination =================
+  const akunGrid = document.getElementById("akunGrid");
+  const akunCards = Array.from(akunGrid.getElementsByClassName("akun-card"));
+  const paginationContainer = document.getElementById("pagination");
+  const perPage = 9;
+  let currentPage = 1;
+
+  function showPage(page) {
+    const start = (page - 1) * perPage;
+    const end = start + perPage;
+
+    akunCards.forEach((card, index) => {
+      card.style.display = index >= start && index < end ? "block" : "none";
     });
+  }
 
-    const akunGrid = document.getElementById("akunGrid");
-    const akunCards = Array.from(akunGrid.getElementsByClassName("akun-card"));
-    const paginationContainer = document.getElementById("pagination");
-    const perPage = 9;
-    let currentPage = 1;
+  function renderPagination() {
+    const totalPages = Math.ceil(akunCards.length / perPage);
+    paginationContainer.innerHTML = "";
 
-    function showPage(page) {
-      const start = (page - 1) * perPage;
-      const end = start + perPage;
-      akunCards.forEach((card, index) => {
-        card.style.display = index >= start && index < end ? "block" : "none";
-      });
-    }
-
-    function renderPagination() {
-      const totalPages = Math.ceil(akunCards.length / perPage);
-      paginationContainer.innerHTML = "";
-
-      const prevBtn = document.createElement("button");
-      prevBtn.innerHTML = "«";
-      prevBtn.disabled = currentPage === 1;
-      prevBtn.onclick = () => {
-        if (currentPage > 1) { currentPage--; showPage(currentPage); renderPagination(); }
-      };
-      paginationContainer.appendChild(prevBtn);
-
-      for (let i = 1; i <= totalPages; i++) {
-        const btn = document.createElement("button");
-        btn.textContent = i;
-        if (i === currentPage) btn.classList.add("active");
-        btn.onclick = () => { currentPage = i; showPage(currentPage); renderPagination(); };
-        paginationContainer.appendChild(btn);
+    // Tombol Sebelumnya
+    const prevBtn = document.createElement("button");
+    prevBtn.innerHTML = "«";
+    prevBtn.disabled = currentPage === 1;
+    prevBtn.onclick = () => {
+      if (currentPage > 1) {
+        currentPage--;
+        showPage(currentPage);
+        renderPagination();
       }
+    };
+    paginationContainer.appendChild(prevBtn);
 
-      const nextBtn = document.createElement("button");
-      nextBtn.innerHTML = "»";
-      nextBtn.disabled = currentPage === totalPages;
-      nextBtn.onclick = () => {
-        if (currentPage < totalPages) { currentPage++; showPage(currentPage); renderPagination(); }
+    // Tombol Angka
+    for (let i = 1; i <= totalPages; i++) {
+      const btn = document.createElement("button");
+      btn.textContent = i;
+      if (i === currentPage) btn.classList.add("active");
+      btn.onclick = () => {
+        currentPage = i;
+        showPage(currentPage);
+        renderPagination();
       };
-      paginationContainer.appendChild(nextBtn);
+      paginationContainer.appendChild(btn);
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      showPage(currentPage);
-      renderPagination();
-    });
-  </script>
+    // Tombol Berikutnya
+    const nextBtn = document.createElement("button");
+    nextBtn.innerHTML = "»";
+    nextBtn.disabled = currentPage === totalPages;
+    nextBtn.onclick = () => {
+      if (currentPage < totalPages) {
+        currentPage++;
+        showPage(currentPage);
+        renderPagination();
+      }
+    };
+    paginationContainer.appendChild(nextBtn);
+  }
+
+  // ================= Inisialisasi =================
+  document.addEventListener("DOMContentLoaded", () => {
+    showPage(currentPage);
+    renderPagination();
+  });
+</script>
 </body>
 </html>

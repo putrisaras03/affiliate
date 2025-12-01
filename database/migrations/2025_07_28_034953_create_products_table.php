@@ -12,21 +12,26 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->unsignedBigInteger('itemid')->primary(); // Primary Key
+            $table->unsignedBigInteger('itemid')->primary(); // primary key dari Shopee
+            $table->unsignedBigInteger('live_account_id');   // foreign key
             $table->string('name');
             $table->string('image')->nullable();
             $table->string('product_link')->nullable();
-            $table->decimal('seller_commission', 10, 2)->nullable(); // misal 5.25%
+            $table->decimal('seller_commission', 10, 2)->nullable();
             $table->unsignedBigInteger('historical_sold')->default(0);
             $table->decimal('price_min', 15, 2)->default(0);
             $table->decimal('price_max', 15, 2)->default(0);
-            $table->decimal('rating_star', 3, 2)->nullable(); // misal 4.75
+            $table->decimal('rating_star', 3, 2)->nullable();
             $table->decimal('shop_rating', 3, 2)->nullable();
+            $table->unsignedBigInteger('ctime')->nullable();
             $table->timestamps();
 
-            $table->unsignedBigInteger('live_account_id')->nullable();
-            $table->foreign('live_account_id')->references('user_id')->on('live_accounts')->onDelete('cascade');
+            $table->foreign('live_account_id')
+                ->references('id')
+                ->on('live_accounts')
+                ->onDelete('cascade');
         });
+
     }
 
     /**

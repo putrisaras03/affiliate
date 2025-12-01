@@ -9,6 +9,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\LiveAccountController;
 use App\Http\Controllers\ShopeeController;
+use App\Http\Controllers\CriteriaSettingController;
+use App\Http\Controllers\MooraController;
 
 // Route utama login
 Route::get('/', function () {
@@ -80,6 +82,9 @@ Route::get('/forgot-password/reset', function () {
     return redirect()->route('login');
 })->name('modal.forgot-password.reset');
 
-Route::get('/detail', function () {
-    return view('detail'); // file resources/views/detail.blade.php
-})->name('detail');
+Route::get('/criteria', [CriteriaSettingController::class, 'index'])
+    ->middleware('auth');
+Route::post('/criteria', [CriteriaSettingController::class, 'store'])->name('criteria.store');
+
+Route::get('/moora/{accountId}', [MooraController::class, 'index'])->name('moora.index');
+Route::post('/moora/run/{accountId}', [MooraController::class, 'run'])->name('moora.run');

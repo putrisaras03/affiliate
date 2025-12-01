@@ -12,23 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('live_accounts', function (Blueprint $table) {
-            // Relasi user (nullable jika akun tidak selalu terhubung ke user sistem)
-            $table->unsignedBigInteger('user_id');
-
-            // Field utama
-            $table->string('shopee_user_name');
-            $table->string('affiliate_id'); // ID unik dari Shopee Affiliate
-            $table->text('cookies')->nullable(); // disimpan terenkripsi
-            $table->string('status')->default('active');
-
-            // Relasi ke studio
-            $table->foreignId('studio_id')->constrained()->onDelete('cascade');
-
+            $table->id(); // Primary key
+            $table->string('nama');
+            $table->foreignId('studio_id')->constrained()->onDelete('cascade'); // Relasi ke tabel studios
             $table->timestamps();
-
-            // Composite primary key
-            $table->primary(['affiliate_id', 'user_id']);
-            $table->index('user_id');
         });
     }
 
