@@ -76,16 +76,16 @@
                 <div class="akun-dropdown">
                   <span class="more-icon" onclick="toggleDropdown(this)">⋮</span>
                   <div class="dropdown-menu">
-                    <button onclick="editAkun(this, {{ $akun->id }}, '{{ $akun->name }}', '{{ $akun->studio_id }}')">
+                    <button onclick="editAkun(this, {{ $akun->id }}, '{{ $akun->nama }}', '{{ $akun->studio_id }}')">
                       <span class="dropdown-icon"><i class="fa-solid fa-pen-to-square"></i></span>
                       <span>Edit</span>
                     </button>
                     <form action="{{ route('live-accounts.destroy', $akun->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus akun ini?')">
                       @csrf
                       @method('DELETE')
-                      <button type="submit">
-                        <span class="dropdown-icon"><i class="fa-solid fa-trash-can"></i></span>
-                        <span>Hapus</span>
+                      <button type="submit" class="delete-btn">
+                      <span class="dropdown-icon"><i class="fa-solid fa-trash-can"></i></span>
+                      <span>Hapus</span>
                       </button>
                     </form>
                   </div>
@@ -163,7 +163,7 @@
             @method('PUT')
             <div class="form-group">
               <span class="input-icon"><i class="fa-solid fa-user"></i></span>
-              <input type="text" id="edit-nama-akun" name="cookie" placeholder="Masukkan Cookie" required>
+              <input type="text" id="edit-nama-akun" name="nama" placeholder="Masukkan Nama" required>
             </div>
 
             <div class="form-group">

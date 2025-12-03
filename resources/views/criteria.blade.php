@@ -6,42 +6,35 @@
   <link rel="icon" href="{{ asset('assets/img/recofy.png') }}" type="image/png">
   <link rel="stylesheet" href="{{ asset('assets/css/criteria.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
-  <!-- Bootstrap -->
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
   <div class="container">
-
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-      <div class="menu-container">
-        <div class="logo">
-          <div class="brand">
-            <img src="/assets/img/4-foto.png">
-          </div>
-          <div class="bars-wrapper" id="toggleSidebar">
-            <i class="fa-solid fa-bars"></i>
-          </div>
-        </div>
-
-        <ul>
-          <li><a href="/dashboard"><i class="fa-solid fa-gauge-high"></i> <span class="menu-text">Dashboard</span></a></li>
-          <li><a href="/etalase"><i class="fa-solid fa-cart-shopping"></i> <span class="menu-text">Akun & Produk</span></a></li>
+   <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+  <div class="menu-container">
+    <div class="logo">
+      <div class="brand">
+       <img src="/assets/img/4-foto.png">
+      </div>
+      <div class="bars-wrapper" id="toggleSidebar">
+        <i class="fa-solid fa-bars"></i>
+      </div>
+    </div>
+    <ul>
+      <li><a href="dashboard"><i class="fa-solid fa-gauge-high"></i> <span class="menu-text">Dashboard</span></a></li>
+          <li><a href="etalase"><i class="fa-solid fa-cart-shopping"></i> <span class="menu-text">Akun & Produk</span></a></li>
           <li class="criteria active"><a href="#"><i class="fa-solid fa-sliders"></i> <span class="menu-text">Pengaturan Kriteria</span></a></li>
-          <li><a href="/profile"><i class="fa-solid fa-gear"></i> <span class="menu-text">Pengaturan Akun</span></a></li>
+          <li><a href="profile"><i class="fa-solid fa-gear"></i> <span class="menu-text">Pengaturan Akun</span></a></li>
         </ul>
-      </div>
+  </div>
 
-      <div class="logout-wrapper">
-        <a href="#" onclick="konfirmasiLogout()" class="logout-btn">
-          <i class="fa-solid fa-right-from-bracket"></i>
-          <span class="logout-text">Keluar</span>
-        </a>
-      </div>
-    </aside>
-
+  <div class="logout-wrapper">
+    <a href="#" onclick="konfirmasiLogout()" class="logout-btn">
+  <i class="fa-solid fa-right-from-bracket"></i>
+  <span class="logout-text">Keluar</span>
+</a>
+  </div>
+</aside>
 
     <!-- Main Content -->
     <div class="main-content" id="mainContent">

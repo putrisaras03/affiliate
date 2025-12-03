@@ -47,7 +47,7 @@ class ProductController extends Controller
                 break;
         }
 
-        $products = $query->paginate(40)->appends($request->query());
+        $products = $query->paginate(20)->appends($request->query());
         $user = Auth::user();
 
         return view('produk', compact('products', 'user', 'sort', 'liveAccountId'));

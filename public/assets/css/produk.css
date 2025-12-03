@@ -628,7 +628,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
   height: 42px; /* sama tinggi dengan dropdown */
   padding: 0 12px;
   border: 1px solid #ccc;
@@ -896,7 +895,7 @@ body {
 .bottom-bar {
     position: fixed;
     bottom: 0;
-    left: 250px; /* sesuaikan sidebar */
+    left: var(--sidebar-width);
     right: 0;
     height: 56px;
     background: #fff;
@@ -904,7 +903,6 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 24px;
     z-index: 9999;
 }
 
@@ -912,12 +910,14 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
+    margin-left: calc(21px);
 }
 
 .bottom-right {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 8px;
+    margin-right: calc(21px);
 }
 
 .btn-batal {

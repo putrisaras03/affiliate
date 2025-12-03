@@ -87,4 +87,5 @@ Route::get('/criteria', [CriteriaSettingController::class, 'index'])
 Route::post('/criteria', [CriteriaSettingController::class, 'store'])->name('criteria.store');
 
 Route::get('/moora/{accountId}', [MooraController::class, 'index'])->name('moora.index');
-Route::post('/moora/run/{accountId}', [MooraController::class, 'run'])->name('moora.run');
+Route::get('/moora/run/{accountId}', [MooraController::class, 'run'])->name('moora.run');
+

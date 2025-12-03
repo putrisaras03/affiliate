@@ -383,23 +383,21 @@ body {
   border-bottom: none;
 }
 
-.dropdown-menu button:hover {
-  background-color: #f5f7ff;
-  color: #178027;
+/* Edit button hover */
+.dropdown-menu button:not(.delete-btn):hover {
+  background-color: #cdd4ff; /* biru pucat */
+  color: #102286; /* hijau */
 }
 
-.dropdown-menu i {
-  font-size: 15px;
+/* Hapus button hover */
+.dropdown-menu button.delete-btn:hover {
+  background-color: #ffecec; /* merah muda */
+  color: #d32f2f; /* merah */
 }
-.dropdown-menu button:nth-child(2):hover {
-  background-color: #ffecec;
-  color: #d32f2f;
-}
-
 
 .akun-stats {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   margin: 14px 0;
 }
 
@@ -407,6 +405,7 @@ body {
   margin: 0;
   font-size: 20px;
   color: #5c6bc0;
+  text-align: center;
 }
 
 .akun-stats div p {
@@ -456,7 +455,7 @@ body {
 }
 
 .pagination {
-  margin-top: 30px;
+  margin-top: 200px;
   text-align: center;
   display: flex;
   justify-content: center;

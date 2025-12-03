@@ -45,7 +45,7 @@
                   <span class="menu-text">Akun & Produk</span>
               </a>
           </li>
-          <li><a href="criteria"><i class="fa-solid fa-sliders"></i> <span class="menu-text">Pengaturan Kriteria</span></a></li>
+          <li><a href="{{ url('criteria') }}"><i class="fa-solid fa-sliders"></i> <span class="menu-text">Pengaturan Kriteria</span></a></li>
           <li><a href="{{ url('profile') }}"><i class="fa-solid fa-gear"></i> <span class="menu-text">Pengaturan Akun</span></a></li>
         </ul>
       </div>
@@ -96,14 +96,13 @@
           </form>
 
           <!-- Tombol Jalankan SPK -->
-          <form action="{{ route('moora.run', ['accountId' => $liveAccountId]) }}" method="POST" class="inline-block">
-              @csrf
-              <button type="submit"
-                  class="btn btn-primary px-4 py-2 rounded-md text-white font-semibold shadow-sm hover:bg-blue-700 transition">
-                  <i class="fa-solid fa-calculator mr-1"></i> Jalankan SPK
-              </button>
-          </form>
-
+          <form action="{{ route('moora.run', ['accountId' => $liveAccountId]) }}" method="GET" class="inline-block">
+            <button type="submit"
+                class="btn btn-primary px-4 py-2 rounded-md text-white font-semibold shadow-sm hover:bg-blue-700 transition">
+                <i class="fa-solid fa-calculator mr-1"></i> Jalankan SPK
+            </button>
+        </form>
+        
           <!-- Tombol Ambil Produk -->
           <button class="btn-ambil-produk" onclick="openCurlModal()">
             <i class="fa-solid fa-download"></i> Ambil Produk
@@ -163,7 +162,7 @@
       <div class="produk-container" id="produkContainer">
         <div class="produk-grid">
           @forelse ($products as $item)
-            <a href="{{ route('produk.detail', ['id' => $liveAccountId, 'item_id' => $item->item_id]) }}" class="produk-item-link">
+            <a href="{{ $item->product_link }}" class="produk-item-link">
               <div class="produk-item relative">
                 @if(isset($item->seller_commission) && isset($item->price_min))
                   @php
@@ -329,6 +328,26 @@
       const modal = document.getElementById('curlModal');
       if (event.target === modal) closeCurlModal();
     });
+    // Fungsi update posisi bottom bar
+function updateBottomBar() {
+    const isCollapsed = sidebar.classList.contains("collapsed");
+    const bottomBar = document.querySelector(".bottom-bar");
+
+    // width sidebar normal = 250px, collapsed = 80px
+    bottomBar.style.setProperty(
+        "--sidebar-width",
+        isCollapsed ? "70px" : "240px"
+    );
+}
+
+// jalankan saat toggle ditekan
+toggleBtn.addEventListener("click", function () {
+    setTimeout(updateBottomBar, 10);
+});
+
+// jalankan saat pertama kali load
+updateBottomBar();
+
   </script>
 </body>
 </html>
