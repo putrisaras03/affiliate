@@ -277,7 +277,7 @@ body {
 /* Hover */
 .table tbody tr:hover td {
   background: #f7f8ff;
-  border-color: ;#d4d7f8
+  border-color: #d4d7f8;
   transition: 0.2s ease-in-out;
 }
 
@@ -343,4 +343,32 @@ body {
   width: 100%;
   display: flex !important;
   justify-content: center !important;
+}
+
+.bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: var(--sidebar-width, 240px);
+    right: 0;
+    height: 60px;
+    background: #ffffff;
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    z-index: 999;
+}
+.btn-batal {
+    background: #ddd;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.btn-massal {
+    background: #4f46e5;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
 }

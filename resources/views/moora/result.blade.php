@@ -59,6 +59,7 @@
           <table class="table table-bordered table-hover">
             <thead class="table-light">
               <tr>
+                <th></th>
                 <th>Rank</th>
                 <th>Produk</th>
                 <th>Gambar</th>
@@ -75,6 +76,11 @@
             <tbody>
               @foreach ($results as $i => $item)
               <tr>
+                <td>
+                  <input type="checkbox" class="row-check" 
+                        name="selected[]" 
+                        value="{{ $item['product']->id }}">
+                </td>
                 <td><strong>{{ $results->firstItem() + $loop->index }}</strong></td>
 
                 <td>{{ $item['product']->name }}</td>
@@ -106,6 +112,7 @@
                 <td>{{ number_format($item['score'], 4) }}</td>
               </tr>
               @endforeach
+              
             </tbody>
           </table>
 <!-- PAGINATION LARAVEL -->
@@ -113,6 +120,33 @@
         {{ $results->links('pagination::bootstrap-5') }}
       </div>
 
+    </div>
+    <!-- BOTTOM BAR -->
+    <div class="bottom-bar">
+
+        <!-- Left -->
+        <div class="bottom-left flex items-center gap-2">
+            <input type="checkbox" id="pilihSemua" class="w-4 h-4 cursor-pointer accent-red-500">
+            <label for="pilihSemua" class="text-sm text-gray-700">
+                Pilih semua produk di halaman ini
+            </label>
+        </div>
+
+        <!-- Right -->
+        <div class="bottom-right flex items-center gap-4">
+
+            <span id="jumlahChecklist" class="text-sm text-gray-600">
+                0 produk dipilih
+            </span>
+
+            <button id="batalChecklist" class="btn-batal">
+                Batal
+            </button>
+
+            <button id="buatLinkMassal" class="btn-massal">
+                Buat Link Massal
+            </button>
+        </div>
     </div>
   </div>
 </div>
@@ -133,6 +167,81 @@ toggleBtn.addEventListener('click', function () {
   sidebar.classList.toggle('collapsed');
   mainContent.classList.toggle('expanded');
 });
+
+// --- Bottom Bar Logic (Copy dari halaman Produk) ---
+
+const jumlahChecklist = document.getElementById("jumlahChecklist");
+const pilihSemua = document.getElementById("pilihSemua");
+const rowCheckboxes = document.querySelectorAll(".row-check");
+
+// Update counter
+function updateJumlahChecklist() {
+    const count = document.querySelectorAll(".row-check:checked").length;
+    jumlahChecklist.textContent = `${count} produk dipilih`;
+}
+
+// Listener checkbox per baris
+rowCheckboxes.forEach(chk =>
+    chk.addEventListener("change", updateJumlahChecklist)
+);
+
+// Checkbox "pilih semua"
+pilihSemua.addEventListener("change", function () {
+    rowCheckboxes.forEach(chk => chk.checked = pilihSemua.checked);
+    updateJumlahChecklist();
+});
+
+// Tombol batal
+document.getElementById("batalChecklist").addEventListener("click", function () {
+    rowCheckboxes.forEach(chk => chk.checked = false);
+    pilihSemua.checked = false;
+    updateJumlahChecklist();
+    alert("Semua pilihan dibatalkan!");
+});
+
+// Tombol download CSV link
+document.getElementById("buatLinkMassal").addEventListener("click", function () {
+    const checked = document.querySelectorAll(".row-check:checked");
+    if (checked.length === 0) {
+        alert("Pilih minimal satu produk dahulu!");
+        return;
+    }
+
+    let csvContent = "data:text/csv;charset=utf-8,";
+    checked.forEach(chk => {
+        const id = chk.value;
+
+        // Ambil link produk dari kolom tabel
+        let link = chk.closest("tr").querySelector("a")?.href ?? "-";
+
+        csvContent += `${id},${link}\n`;
+    });
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.href = encodedUri;
+    link.download = "link_produk_moora.csv";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+});
+
+// --- Update posisi bottom bar agar mengikuti sidebar ---
+function updateBottomBar() {
+    const isCollapsed = sidebar.classList.contains("collapsed");
+    const bottomBar = document.querySelector(".bottom-bar");
+
+    bottomBar.style.setProperty(
+        "--sidebar-width",
+        isCollapsed ? "70px" : "240px"
+    );
+}
+
+toggleBtn.addEventListener("click", () => {
+    setTimeout(updateBottomBar, 10);
+});
+
+updateBottomBar();
 </script>
 
 </body>
