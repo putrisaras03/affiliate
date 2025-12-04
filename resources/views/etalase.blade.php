@@ -39,7 +39,7 @@
     <!-- Main Content -->
     <div class="main-content" id="mainContent">
       <div class="navbar">
-        <div class="nav-title">Rekomendasi Produk</div>
+        <div class="nav-title">Tambah Akun</div>
 
         <div class="user-area">
           <div class="greetingg">Hi, {{ auth()->user()->username ?? auth()->user()->name }}!</div>
