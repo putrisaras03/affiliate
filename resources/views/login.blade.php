@@ -28,9 +28,10 @@
 
         <div class="form-group">
           <i class="fas fa-lock"></i>
-          <input type="password" name="password" placeholder=" " required />
+          <input type="password" id="password" name="password" placeholder=" " required />
           <label>Password</label>
-        </div>
+          <i id="togglePassword" class="fas fa-eye toggle-password"></i>
+      </div>
 
         <div class="forgot-link">
           <a href="javascript:void(0)" onclick="openModal()">Lupa Password?</a>
@@ -117,6 +118,19 @@
 
 <!-- Script Modal -->
 <script>
+  document.getElementById("togglePassword").addEventListener("click", function () {
+  const passwordField = document.getElementById("password");
+
+  // toggle tipe
+  const type = passwordField.type === "password" ? "text" : "password";
+  passwordField.type = type;
+
+  // toggle icon
+  this.classList.toggle("fa-eye");
+  this.classList.toggle("fa-eye-slash");
+});
+
+
   function openModal() {
     document.getElementById('modal').style.display = 'flex';
   }

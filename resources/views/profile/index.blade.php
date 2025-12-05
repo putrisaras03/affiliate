@@ -43,7 +43,7 @@
 
   <meta charset="UTF-8">
   <title>Pengaturan Akun - Recofy</title>
-  <link rel="icon" href="{{ asset('assets/img/4-fotor-2025102710195.png') }}" type="image/png">
+  <link rel="icon" href="{{ asset('assets/img/recofy.png') }}" type="image/png">
   <link rel="stylesheet" href="{{ asset('assets/css/index_profile.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>

@@ -179,6 +179,30 @@ form button:hover {
 .modal-box .form-group {
   margin-bottom: 24px;
 }
+.form-group {
+  position: relative;
+}
+
+.form-group input {
+  width: 100%;
+  padding-right: 40px;
+}
+
+.toggle-password {
+  position: absolute;
+  margin-left: 370px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #888;
+  font-size: 18px;
+}
+
+.toggle-password:hover {
+  color: #333;
+}
+
+
 
 /* === MODAL BUTTONS === */
 .modal-buttons {
