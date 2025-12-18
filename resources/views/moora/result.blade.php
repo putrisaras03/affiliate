@@ -115,10 +115,33 @@
               
             </tbody>
           </table>
-<!-- PAGINATION LARAVEL -->
-      <div class="d-flex justify-content-center mt-3">
-        {{ $results->links('pagination::bootstrap-5') }}
-      </div>
+          
+@if ($results->hasPages())
+<div class="pagination-wrapper d-flex justify-content-center mt-3 mb-5">
+    {{-- Tombol Sebelumnya « --}}
+    @if ($results->onFirstPage())
+        <button disabled>«</button>
+    @else
+        <a href="{{ $results->previousPageUrl() }}"><button>«</button></a>
+    @endif
+
+    {{-- Angka halaman --}}
+    @for ($i = 1; $i <= $results->lastPage(); $i++)
+        @if ($i == $results->currentPage())
+            <button class="active">{{ $i }}</button>
+        @else
+            <a href="{{ $results->url($i) }}"><button>{{ $i }}</button></a>
+        @endif
+    @endfor
+
+    {{-- Tombol Berikutnya » --}}
+    @if ($results->hasMorePages())
+        <a href="{{ $results->nextPageUrl() }}"><button>»</button></a>
+    @else
+        <button disabled>»</button>
+    @endif
+</div>
+@endif
 
     </div>
     <!-- BOTTOM BAR -->

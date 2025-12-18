@@ -291,51 +291,32 @@ body {
   text-decoration: underline;
 }
 
-/* ===== PAGINATION FIX ===== */
-
-/* Reset default bawaan browser */
-.pagination {
-  list-style: none !important;
-  padding-left: 0 !important;
-  margin: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
+.pagination-wrapper {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 60px; /* jarak dari footer */
 }
 
-.pagination .page-item {
-  list-style-type: none !important;
+
+.pagination-wrapper button {
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+    border-radius: 6px; /* bikin rounded */
 }
 
-/* Hilangin underline */
-.pagination .page-link {
-  text-decoration: none !important;
+.pagination-wrapper button.active {
+    background: #5c6bc0;
+    color: #fff;
+    border-color: #5c6bc0;
 }
 
-/* Style tombol pagination */
-.pagination .page-item .page-link {
-  border-radius: 8px;
-  padding: 8px 14px;
-  border: 1px solid #d2d4e3;
-  color: #444;
-  background: white;
-  transition: 0.2s ease-in-out;
-}
-
-/* Active state */
-.pagination .page-item.active .page-link {
-  background-color: #4f46e5;
-  border-color: #4f46e5;
-  color: white;
-  font-weight: 600;
-}
-
-/* Hover state */
-.pagination .page-item .page-link:hover {
-  background-color: #eef0ff;
-  border-color: #bfc2f6;
-  color: #4f46e5;
+.pagination-wrapper button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 /* Center wrapper auto fix */

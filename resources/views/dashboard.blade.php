@@ -144,7 +144,7 @@
             <span style="font-weight: 700; color: ${config.accent_color};">${account.avgCommission}%</span>
           </div>
 
-          <div style="display: flex; justify-content: space-between;">
+          <div style="display: flex;  justify-content: space-between;">
             <span style="opacity: 0.7;">🚀 Potensi Komisi Tertinggi</span>
             <span style="font-weight: 700; color: ${config.primary_action_color};">${formatCurrency(account.maxCommission)}</span>
           </div>

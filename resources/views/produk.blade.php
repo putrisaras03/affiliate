@@ -156,8 +156,6 @@
         </div>
       </div>
 
-      <div class="pagination-wrapper" id="paginationTop"></div>
-
       <!-- Grid Produk -->
       <div class="produk-container" id="produkContainer">
         <div class="produk-grid">
@@ -216,12 +214,32 @@
         </div>
       </div>
 
-      @if ($products->hasPages())
-        <div class="pagination-container">
-          <div class="pagination-wrapper">
-            {{ $products->links('vendor.pagination.bootstrap-5') }}
-          </div>
-        </div>
+@if ($products->hasPages())
+<div class="pagination-wrapper">
+    {{-- Tombol Sebelumnya « --}}
+    @if ($products->onFirstPage())
+        <button disabled>«</button>
+    @else
+        <a href="{{ $products->previousPageUrl() }}"><button>«</button></a>
+    @endif
+
+    {{-- Angka halaman --}}
+    @for ($i = 1; $i <= $products->lastPage(); $i++)
+        @if ($i == $products->currentPage())
+            <button class="active">{{ $i }}</button>
+        @else
+            <a href="{{ $products->url($i) }}"><button>{{ $i }}</button></a>
+        @endif
+    @endfor
+
+    {{-- Tombol Berikutnya » --}}
+    @if ($products->hasMorePages())
+        <a href="{{ $products->nextPageUrl() }}"><button>»</button></a>
+    @else
+        <button disabled>»</button>
+    @endif
+</div>
+
       @endif
     </div>
   </div>

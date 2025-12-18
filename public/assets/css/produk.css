@@ -353,52 +353,32 @@ body {
   color: #444;
 }
 
-/* Umum untuk wrapper pagination */
 .pagination-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  flex-wrap: wrap;
-  font-family: Arial, sans-serif;
-  font-size: 13px;
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 60px; /* jarak dari footer */
 }
 
-/* Posisi */
-#paginationTop {
-  justify-content: flex-end;
-  margin: 12px 0;
-}
-#paginationBottom {
-  justify-content: center;
-  margin: 24px 0 8px;
-}
 
-/* Tombol Pagination */
 .pagination-wrapper button {
-  padding: 6px 12px; /* lebih kecil */
-  font-size: 13px;
-  font-weight: bold;
-  border: 1px solid #cfd2e4;
-  background-color: #fff;
-  color: #4f4f82;
-  cursor: pointer;
-  border-radius: 4px;
-  min-width: 28px;
-  transition: background-color 0.2s ease;
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+    border-radius: 6px; /* bikin rounded */
 }
 
-/* Tombol Aktif (halaman sekarang) */
 .pagination-wrapper button.active {
-  background-color: #254ab0;
-  color: #fff;
-  border: none;
-  opacity: 1; /* tetap solid */
+    background: #5c6bc0;
+    color: #fff;
+    border-color: #5c6bc0;
 }
 
-/* Tombol Disabled (kecuali tombol aktif) */
-.pagination-wrapper button:disabled:not(.active) {
-  opacity: 0.4;
-  cursor: not-allowed;
+.pagination-wrapper button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 /* Info Halaman */

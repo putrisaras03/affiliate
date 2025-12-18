@@ -455,39 +455,31 @@ body {
 }
 
 .pagination {
-  margin-top: 200px;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 6px; 
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 60px; /* jarak dari footer */
 }
+
 
 .pagination button {
-  background-color: #fff;
-  border: 1px solid #ccc;
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 13px;
-  transition: all 0.2s ease-in-out;
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+    border-radius: 6px; /* bikin rounded */
 }
 
-.pagination button:hover:not(:disabled) {
-  background-color: #f0f0f0;
-  border-color: #888;
-}
-
-.pagination .active {
-  background-color: #5c6bc0;
-  color: white;
-  font-weight: bold;
-  border-color: #5c6bc0;
+.pagination button.active {
+    background: #5c6bc0;
+    color: #fff;
+    border-color: #5c6bc0;
 }
 
 .pagination button:disabled {
-  opacity: 0.5;
-  cursor: default;
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 
